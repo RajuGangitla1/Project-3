@@ -1,0 +1,7 @@
+# compiled output
+.gcloudignore
+.git
+.env
+
+/dist
+/node_modules
