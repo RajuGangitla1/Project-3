@@ -32,6 +32,7 @@ const connectDb = async () => {
 
 async function getTokenAccountsByScope(scope) {
     try {
+        //ssssssssssssssssssssssssssssssss
         const user = await userAccounts.aggregate([
             {
                 $match: { scope: scope },
