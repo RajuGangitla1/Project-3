@@ -29,7 +29,6 @@ const connectDb = async () => {
 
 
 
-
 async function getTokenAccountsByScope(scope) {
     try {
         //ssssssssssssssssssssssssssssssss
