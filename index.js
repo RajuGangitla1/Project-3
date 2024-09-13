@@ -20,12 +20,15 @@ const app = express();
 
 const connectDb = async () => {
     try {
-         await mongoose.connect("ssss")
+        await mongoose.connect("ssss")
         console.log("Db connected")
     } catch (error) {
         console.log(error)
     }
 };
+
+
+
 
 async function getTokenAccountsByScope(scope) {
     try {
@@ -62,7 +65,7 @@ async function getFaceBookPageID(token) {
         }
         else
             console.log("No id found, check for proper access token")
-            throw new BadRequestException("No id found, check for proper access token")
+        throw new BadRequestException("No id found, check for proper access token")
     }
     catch (err) {
         console.log("getFaceBookPageID", err.message)
@@ -96,17 +99,17 @@ async function postToInstagram(content) {
         const encodedUrl = encodeURIComponent(content.mediaUrl);
         let data;
         console.log(encodedUrl)
-        if (content?.type.split('/')[0] === "video"){
+        if (content?.type.split('/')[0] === "video") {
             data = await axios.post(
                 `https://graph.facebook.com/v17.0/${accoutId?.id}/media?media_type=VIDEO&video_url=${encodedUrl}&caption=${encodedMessage}&access_token=${accoutId?.access_token}`
             )
         }
-        if (content?.type.split('/')[0] === "image"){
+        if (content?.type.split('/')[0] === "image") {
             data = await axios.post(
                 `https://graph.facebook.com/v17.0/${accoutId?.id}/media?image_url=${encodedUrl}&caption=${encodedMessage}&access_token=${accoutId?.access_token}`
             )
         }
-        
+
         return data
     } catch (err) {
         console.log("postToInstagram", err.message)
@@ -133,9 +136,9 @@ async function publishInstagramPost(creation_id) {
 
 async function createFaceBookPagePost(content) {
     try {
-        const userToken= await getTokenAccountsByScope("facebook")
+        const userToken = await getTokenAccountsByScope("facebook")
         const token = userToken[0]?.refresh_token
-        const pageID = await getFaceBookPageID(token); 
+        const pageID = await getFaceBookPageID(token);
         const encodedMessage = encodeURIComponent(content?.message)
         const encodedUrl = encodeURIComponent(content.mediaUrl);
         if (content?.type.split('/')[0] === "image") {
@@ -147,7 +150,7 @@ async function createFaceBookPagePost(content) {
             console.log("fb res", res)
             return res
         }
-        if (content?.type.split('/')[0] === "video"){
+        if (content?.type.split('/')[0] === "video") {
             const { data: res } = await axios.post(
                 `https://graph.facebook.com/${pageID.id}/videos?url=${encodedUrl}&message=${encodedMessage}&access_token=${pageID?.access_token}`
             ).catch(({ response }) => console.log(response?.data))
@@ -177,7 +180,7 @@ async function generateSignedUrl(path) {
                     .bucket(bucket)
                     .file(path)
                     .getSignedUrl({
-                        responseDisposition:"attachment",
+                        responseDisposition: "attachment",
                         version: "v4",
                         action: "read",
                         expires: Date.now() + 100 * 60 * 1000,
@@ -214,7 +217,7 @@ async function UpdateSchedulePost(id, schedulePostDTO) {
     }
 }
 
-async function publishSocialMediaPosts(){
+async function publishSocialMediaPosts() {
     await connectDb()
     let posts = await schedulePostModel.aggregate([
         {
@@ -253,7 +256,7 @@ async function publishSocialMediaPosts(){
             $unset: ["result"],
         },
     ])
-    console.log("length", posts.length )
+    console.log("length", posts.length)
 
 
     await Promise.all(posts.map(async (post) => {
@@ -264,11 +267,11 @@ async function publishSocialMediaPosts(){
             mediaUrl: updatedMediaUrl,
             ScheduledDate: post.ScheduledDate,
             platform: post.platform,
-            type:post.type
+            type: post.type
         };
 
         try {
-            if (post.platform === "FaceBook" && post.status === "Scheduled" ) {
+            if (post.platform === "FaceBook" && post.status === "Scheduled") {
 
                 let res = await createFaceBookPagePost(content);
                 if (res?.id) {
@@ -281,8 +284,8 @@ async function publishSocialMediaPosts(){
                     };
                     await UpdateSchedulePost(post._id, completePostData);
                 }
-            } else if (post.platform === "Instagram" && post.status === "Scheduled" ) {
-               if (post?.scheduledId) {
+            } else if (post.platform === "Instagram" && post.status === "Scheduled") {
+                if (post?.scheduledId) {
                     let result = await publishInstagramPost(post?.scheduledId)
                     if (result?.data?.id) {
                         // Update post status on success
