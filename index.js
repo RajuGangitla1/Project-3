@@ -20,7 +20,7 @@ const app = express();
 
 const connectDb = async () => {
     try {
-         await mongoose.connect("mongodb+srv://root:root@development.1qgn5.mongodb.net/?retryWrites=true&w=majority")
+         await mongoose.connect("ssss")
         console.log("Db connected")
     } catch (error) {
         console.log(error)
