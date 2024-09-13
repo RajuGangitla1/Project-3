@@ -15,7 +15,6 @@ const storage = new Storage({
 
 const bucket = 'testing_joolt1';
 
-
 const app = express();
 
 const connectDb = async () => {
@@ -26,8 +25,6 @@ const connectDb = async () => {
         console.log(error)
     }
 };
-
-
 
 async function getTokenAccountsByScope(scope) {
     try {
