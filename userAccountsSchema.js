@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+
+
 const userAccountsSchema = new mongoose.Schema(
     {
         belongsTo: {
