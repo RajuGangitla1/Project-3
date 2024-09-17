@@ -20,4 +20,5 @@ const userAccountsSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+
 export default mongoose.model("userAccounts", userAccountsSchema);
