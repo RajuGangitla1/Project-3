@@ -21,5 +21,4 @@ const userAccountsSchema = new mongoose.Schema(
 );
 
 
-
 export default mongoose.model("userAccounts", userAccountsSchema);
